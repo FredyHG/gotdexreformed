@@ -1,7 +1,9 @@
 package dev.dracarys.gotdexreformed.controllers;
 
 
+import dev.dracarys.gotdexreformed.client.IceAndFireClient;
 import dev.dracarys.gotdexreformed.client.ImgBBClient;
+import dev.dracarys.gotdexreformed.dtos.CharacterDto;
 import dev.dracarys.gotdexreformed.dtos.ImgBBDto;
 import dev.dracarys.gotdexreformed.dtos.ImgDto;
 import dev.dracarys.gotdexreformed.models.CharacterEntity;
@@ -21,7 +23,8 @@ public class ImgBBController {
 
     @Autowired
     ImgBBClient imgBBClient;
-
+    @Autowired
+    IceAndFireClient iceAndFireClient;
 
 
     final CharacterService characterService;
@@ -39,6 +42,7 @@ public class ImgBBController {
         String image = imgDto.getImage();
         String strID = imgDto.getId();
         Long id = Long.parseLong(strID);
+        CharacterDto characterDto = iceAndFireClient.findAndCharacterById(id.toString()).block();
         String name = imgDto.getName();
 
         Mono<ImgBBDto> s = imgBBClient.uploadImage(image);
@@ -49,14 +53,14 @@ public class ImgBBController {
         String url = imgBBDto.getData().getUrl();
 
         if(characterService.getCharByIdGot(id).isEmpty()) {
-            CharacterEntity character = auxSave(name,url,id);
+            CharacterEntity character = auxSave(name,url,id, characterDto);
 
             return characterService.save(character);
         }
         if(characterService.getCharByIdGot(id).isPresent()) {
             Optional<CharacterEntity> charac = characterService.getCharByIdGot(id);
             characterService.deleteCharacter(charac.get());
-            CharacterEntity character = auxSave(name,url,id);
+            CharacterEntity character = auxSave(name,url,id, characterDto);
 
             return characterService.save(character);
         }
@@ -66,11 +70,17 @@ public class ImgBBController {
 
 
 
-    public CharacterEntity auxSave(String name, String url, Long id) {
+    public CharacterEntity auxSave(String name, String url, Long id, CharacterDto characterDto) {
         CharacterEntity characterEntity = new CharacterEntity();
+
         characterEntity.setName(name);
         characterEntity.setId_api_got(id);
         characterEntity.setUrl(url);
+        characterEntity.setFirstName(characterDto.getFirstName());
+        characterEntity.setLastName(characterDto.getLastName());
+        characterEntity.setFullName(characterDto.getFullName());
+        characterEntity.setTitle(characterDto.getTitle());
+        characterEntity.setFamily(characterDto.getFamily());
 
         return characterEntity;
     }

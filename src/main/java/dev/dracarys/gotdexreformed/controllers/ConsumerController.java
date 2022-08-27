@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/webclient")
 public class ConsumerController {
 
+    @Autowired
     CharacterRepository characterRepository;
 
     @Autowired

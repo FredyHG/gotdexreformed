@@ -20,4 +20,9 @@ public class CharacterEntity {
     private long id_api_got;
     private String url;
     private String name;
+    private String firstName;
+    private String lastName;
+    private String fullName;
+    private String title;
+    private String family;
 }
