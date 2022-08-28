@@ -32,7 +32,6 @@ public class GotController {
 
     @GetMapping("/character")
     public List<CharacterDto> getAllChars(){
-
         Flux<CharacterDto> s =  iceAndFireClient.getAllCharacters();
         List<CharacterDto> lcharacterDto = s.collectList().block();
         Objects.requireNonNull(lcharacterDto).forEach(s1 -> {

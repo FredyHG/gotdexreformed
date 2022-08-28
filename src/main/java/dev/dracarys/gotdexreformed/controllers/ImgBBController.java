@@ -2,10 +2,10 @@ package dev.dracarys.gotdexreformed.controllers;
 
 
 import dev.dracarys.gotdexreformed.client.IceAndFireClient;
-import dev.dracarys.gotdexreformed.client.ImgBBClient;
 import dev.dracarys.gotdexreformed.dtos.CharacterDto;
 import dev.dracarys.gotdexreformed.dtos.ImgBBDto;
 import dev.dracarys.gotdexreformed.dtos.ImgDto;
+import dev.dracarys.gotdexreformed.imageService.ImagemService;
 import dev.dracarys.gotdexreformed.models.CharacterEntity;
 import dev.dracarys.gotdexreformed.services.CharacterService;
 import org.apache.coyote.Response;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -25,7 +24,7 @@ import java.util.Optional;
 public class ImgBBController {
 
     @Autowired
-    ImgBBClient imgBBClient;
+    ImagemService imagemService;
     @Autowired
     IceAndFireClient iceAndFireClient;
 
@@ -48,8 +47,7 @@ public class ImgBBController {
         CharacterDto characterDto = iceAndFireClient.findAndCharacterById(id.toString()).block();
         String name = imgDto.getName();
 
-        Mono<ImgBBDto> image_url = imgBBClient.uploadImage(image);
-        ImgBBDto imgBBDto = image_url.block();
+        ImgBBDto imgBBDto = imagemService.uploadImage(image);
         if (imgBBDto == null) {
             return ResponseEntity.notFound().build();
         }
