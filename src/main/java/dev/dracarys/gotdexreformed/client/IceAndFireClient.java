@@ -26,11 +26,7 @@ public class IceAndFireClient {
                 .uri("/Characters/" + id)
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new RuntimeException("verifique os parametros informados")))
-                .bodyToMono(CharacterDto.class)
-                ;
-
+                .bodyToMono(CharacterDto.class);
     }
     public Flux<CharacterDto> getAllCharacters() {
         log.info("Listando todos os personagens");
@@ -39,8 +35,6 @@ public class IceAndFireClient {
                 .uri("/Characters" )
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new RuntimeException("verifique os parametros informados")))
                 .bodyToFlux(CharacterDto.class);
 
     }
