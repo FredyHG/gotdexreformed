@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -34,11 +35,9 @@ public class GotController {
 
         Flux<CharacterDto> s =  iceAndFireClient.getAllCharacters();
         List<CharacterDto> lcharacterDto = s.collectList().block();
-        lcharacterDto.forEach(s1 -> {
+        Objects.requireNonNull(lcharacterDto).forEach(s1 -> {
             Optional<CharacterEntity> s2 = characterRepository.findByIdGot(s1.getId());
-            if(s2.isPresent()){
-                s1.setUrl(s2.get().getUrl());
-            }
+            s2.ifPresent(characterEntity -> s1.setUrl(characterEntity.getUrl()));
 
         });
         return lcharacterDto;
