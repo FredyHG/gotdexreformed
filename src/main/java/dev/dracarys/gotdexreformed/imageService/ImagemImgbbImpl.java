@@ -1,5 +1,4 @@
-package dev.dracarys.gotdexreformed.client;
-
+package dev.dracarys.gotdexreformed.imageService;
 
 import dev.dracarys.gotdexreformed.dtos.ImgBBDto;
 import lombok.extern.slf4j.Slf4j;
@@ -9,20 +8,19 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-@Service
-@Slf4j
-public class ImgBBClient {
 
+
+@Slf4j
+public class ImagemImgbbImpl implements ImagemService {
     private final WebClient webClient;
 
 
-    public ImgBBClient(WebClient.Builder builder) {
+    public ImagemImgbbImpl(WebClient.Builder builder) {
         webClient = builder.baseUrl("https://api.imgbb.com/1/upload").build();
     }
 
-    public Mono<ImgBBDto> uploadImage(String imageBase64) {
+    public ImgBBDto uploadImage(String imageBase64) {
         log.info("Return url");
 
         return webClient
@@ -35,9 +33,9 @@ public class ImgBBClient {
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError,
                         error -> Mono.error(new RuntimeException("verifique os parametros informados")))
-                .bodyToMono(ImgBBDto.class);
+                .bodyToMono(ImgBBDto.class)
+                .block();
 
     }
-
 
 }
